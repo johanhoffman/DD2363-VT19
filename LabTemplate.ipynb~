@@ -21,7 +21,7 @@
         "colab_type": "text"
       },
       "source": [
-        "<a href=\"https://colab.research.google.com/github/johanhoffman/DD2363-VT19/blob/lab-1-vdnguyen/LabTemplate.ipynb\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+        "<a href=\"https://colab.research.google.com/github/johanhoffman/DD2363-VT19/blob/add-sparse-matrix/LabTemplate.ipynb\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
       ]
     },
     {
@@ -276,19 +276,6 @@
     },
     {
       "metadata": {
-        "id": "Y-enWfBvcbRZ",
-        "colab_type": "code",
-        "colab": {}
-      },
-      "cell_type": "code",
-      "source": [
-        ""
-      ],
-      "execution_count": 0,
-      "outputs": []
-    },
-    {
-      "metadata": {
         "id": "I5Kf3qRyY5J5",
         "colab_type": "text"
       },
@@ -319,7 +306,6 @@
       },
       "cell_type": "code",
       "source": [
-        "# Just a test\n",
         "# Create a vector as a NumPy array\n",
         "x = np.array([1,2,3,4])\n",
         "\n",
@@ -491,7 +477,7 @@
         "print('Sparse matrix row pointer: \\n',spA.row_ptr)\n",
         "    "
       ],
-      "execution_count": 0,
+      "execution_count": 16,
       "outputs": [
         {
           "output_type": "stream",
