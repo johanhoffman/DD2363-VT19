@@ -1,5 +1,5 @@
 # DD2363-VT19
-This is a repository for the course: 
+This is a repository for the course:
 DD2363 "Methods in Scientific Computing", spring term 2019, 
 KTH Royal Institute of Technology in Stockholm, Sweden. 
    
