@@ -14,7 +14,7 @@ class CRS:
 		self.calc_val(A)
 		self.calc_col_idx(A)
 		self.calc_row_ptr(A)
-		self.make_one_indexed()
+		# self.make_one_indexed()
 
 	@property
 	def val(self):
@@ -110,8 +110,8 @@ class CRS:
 			row_starts[:bbins.size] += bbins
 			row_idx = row_starts.cumsum() - 1
 			res = np.zeros(A.shape[0])
-			for i in range(A._val.size):
-				res[row_idx[i]] += B[A._col_idx[i]] * A._val[i]
+			scalar_product_pairs = B[A._col_idx] * A._val
+			np.add.at(res, row_idx, scalar_product_pairs)
 			return res
 		elif isinstance(B, CRS):
 			row_starts = np.zeros(B._val.size, dtype = np.int64)
@@ -119,8 +119,8 @@ class CRS:
 			row_starts[:bbins.size] += bbins
 			row_idx = row_starts.cumsum() - 1
 			res = np.zeros(B.shape[1])
-			for i in range(B._val.size):
-				res[B._col_idx[i]] += A[row_idx[i]] * B._val[i]
+			scalar_product_pairs = A[row_idx] * B._val
+			np.add.at(res, B._col_idx, scalar_product_pairs)
 			return res
 
 		return np.dot(A, B)
@@ -169,14 +169,14 @@ def test_matrix_vector_product():
 	x = np.random.rand(3)
 	true_value = np.dot(A, x)
 	b = inner_product_matrix(A, x)
-	assert np.array_equal(true_value, b)
+	assert np.allclose(true_value, b)
 
 def test_matrix_matrix_product():
 	A = np.random.rand(5, 3)
 	B = np.random.rand(3, 4)
 	true_value = np.dot(A, B)
 	C = inner_product_matrix(A, B)
-	assert np.array_equal(true_value, C)
+	assert np.allclose(true_value, C)
 
 def test_known_CRS():
 	sparse_matrix = np.array([
@@ -188,6 +188,7 @@ def test_known_CRS():
 	 [0, 0, 0, 0, 2, 3]])
 
 	A_CRS = CRS(sparse_matrix)
+	A_CRS.make_one_indexed()
 	# A_CRS.print_stats()
 	assert np.array_equal(A_CRS.val, [3, 2, 2, 2, 1, 1, 3, 2, 1, 2, 3])
 	assert np.array_equal(A_CRS.col_idx, [1, 2, 4, 2, 3, 3, 3, 4, 5, 5, 6])
@@ -259,7 +260,9 @@ def test_CRS_product_large(m, n):
 	# print(true_right_val, right_val)
 	assert np.allclose(true_right_val, right_val)
 	assert np.allclose(true_left_val, left_val)
-	# print("%dx%d: %.2f" % (m, n, (t1-t0)/(t2-t1)))
+	# speedup = (t1-t0)/(t2-t1)
+	# if speedup > 1:
+		# print("%5dx%5d: %.2f" % (m, n, speedup))
 
 def test_CRS_matrix_vector_product():
 	test_CRS_product_known()
@@ -275,8 +278,5 @@ def run_tests():
 	test_CRS_matrix_vector_product()
 
 if __name__ == "__main__":
-	try:
-		run_tests()
-		print("All tests passed!")
-	except Exception as e:
-		print(e)
+	run_tests()
+	print("All tests passed!")
