@@ -1,3 +1,4 @@
+
 import time
 import numpy as np
 
@@ -38,8 +39,20 @@ def matrix_matrix_prod(A,B):
     return C
 
 
-v1 = np.array([1, 2, 3, 4])
-A = np.array([1])
-B = np.array([2])
-print(B.shape[0],B.shape[1],A.shape[0],A.shape[1])
-#print(matrix_matrix_prod(B,A))
+class SparseMatrix:
+    def __init__(self, val, col_idx, row_ptr):
+        self.val = val
+        self.col_idx = col_idx
+        self.row_ptr = row_ptr
+
+    def __str__(self):
+        mtx_str = "val array: " + np.array_str(self.val) + "\ncol_idx: " + np.array_str(self.col_idx) + "\nrow_ptr: " + np.array_str(self.row_ptr)
+        return mtx_str
+
+M = np.array([[1,0,0,0], [0,1,0,0], [0,0,1,0], [0,0,0,1]])
+val = np.array([1,1,1,1])
+col_idx = np.array([0,1,2,3])
+row_ptr = np.array([0,1,2,3,4])
+
+x = SparseMatrix(val, col_idx, row_ptr)
+print x
