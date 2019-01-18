@@ -54,13 +54,13 @@ class CRS:
 		empty_top_rows = (row_cumsum == 0).sum()
 
 		# populate the row_ptr array
-		self._row_ptr = np.zeros(self.shape[0], dtype = self.index_dtype)
+		self._row_ptr = np.zeros(self.shape[0] + 1, dtype = self.index_dtype)
 		start_index = empty_top_rows + 1
 		end_index = reverse_bincount.size + 1 + empty_top_rows
 		self._row_ptr[start_index:end_index] = reverse_bincount + 1
 		# make sure that empty rows at the end are correctly reconstructed
-		self._row_ptr[end_index:] = -1
-		# self._row_ptr = np.array([0, 0, 3, -1])
+		self._row_ptr[end_index:] = self._val.size
+		# self._row_ptr[-1] = self._val.size
 
 	def make_one_indexed(self):
 		"""Transform col_idx and row_ptr to use 1-indexing in output, 
@@ -79,7 +79,7 @@ class CRS:
 	def reconstruct(self):
 		A = np.zeros(self.shape, dtype = self.dtype)
 		row_starts = np.zeros(self._val.size, dtype = self.index_dtype)
-		bbins = np.bincount(self._row_ptr[self._row_ptr >= 0])
+		bbins = np.bincount(self._row_ptr[self._row_ptr < self._val.size])
 		row_starts[:bbins.size] += bbins
 		row_idx = row_starts.cumsum() - 1
 		A[row_idx, self._col_idx] = self.val
@@ -106,7 +106,7 @@ class CRS:
 	def multiply(A, B):
 		if isinstance(A, CRS):
 			row_starts = np.zeros(A._val.size, dtype = np.int64)
-			bbins = np.bincount(A._row_ptr[A._row_ptr >= 0])
+			bbins = np.bincount(A._row_ptr[A._row_ptr < A._val.size])
 			row_starts[:bbins.size] += bbins
 			row_idx = row_starts.cumsum() - 1
 			res = np.zeros(A.shape[0])
@@ -115,7 +115,7 @@ class CRS:
 			return res
 		elif isinstance(B, CRS):
 			row_starts = np.zeros(B._val.size, dtype = np.int64)
-			bbins = np.bincount(B._row_ptr[B._row_ptr >= 0])
+			bbins = np.bincount(B._row_ptr[B._row_ptr < B._val.size])
 			row_starts[:bbins.size] += bbins
 			row_idx = row_starts.cumsum() - 1
 			res = np.zeros(B.shape[1])
@@ -192,7 +192,7 @@ def test_known_CRS():
 	# A_CRS.print_stats()
 	assert np.array_equal(A_CRS.val, [3, 2, 2, 2, 1, 1, 3, 2, 1, 2, 3])
 	assert np.array_equal(A_CRS.col_idx, [1, 2, 4, 2, 3, 3, 3, 4, 5, 5, 6])
-	assert np.array_equal(A_CRS.row_ptr, [1, 4, 6, 7, 9, 10])
+	assert np.array_equal(A_CRS.row_ptr, [1, 4, 6, 7, 9, 10, 12])
 	assert np.array_equal(A_CRS.reconstruct(), sparse_matrix)
 
 
