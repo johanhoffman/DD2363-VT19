@@ -38,8 +38,19 @@ def matrix_matrix_prod(A,B):
     return C
 
 
-v1 = np.array([1, 2, 3, 4])
-A = np.array([1])
-B = np.array([2])
-print(B.shape[0],B.shape[1],A.shape[0],A.shape[1])
-#print(matrix_matrix_prod(B,A))
+def SparseMatrix_vec_prod(A,x):
+    prod = np.zeros( (A.row_ptr.size-1) )
+    for i in range(A.row_ptr.size-1):
+        for j in range(A.row_ptr[i],A.row_ptr[i+1]):
+            prod[i] += A.val[j]*x[A.col_idx[j]]
+    return prod
+
+class SparseMatrix:
+    def __init__(self, val, col_idx, row_ptr):
+        self.val = val
+        self.col_idx = col_idx
+        self.row_ptr = row_ptr
+
+    def __str__(self):
+        mtx_str = "val array: " + np.array_str(self.val) + "\ncol_idx: " + np.array_str(self.col_idx) + "\nrow_ptr: " + np.array_str(self.row_ptr)
+        return mtx_str
