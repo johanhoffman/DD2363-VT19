@@ -114,10 +114,8 @@ def test_polynomial():
             x_0 = -p/2 + (p*p/4 - q)**.5
             x_1 = -p/2 - (p*p/4 - q)**.5
             x_start = 0
-            # print(x_0, x_1)
             x = newton(f, x_start)
             assert np.isclose(x, x_0) or np.isclose(x, x_1)
-            # print(x, x_0, x_1)
 
 def test_GMRES():
     A = np.array([[2, 1], [5, 7]], dtype = np.float64)
