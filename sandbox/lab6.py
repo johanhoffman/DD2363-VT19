@@ -59,10 +59,7 @@ def fem_2D(f, verts, tris, bound):
             A[tri[2], tri[2]] += phi_33_g * area
             b[tri[2]] += gauss_quad_2D(phi_3f, vert) * area
 
-    # print(A)
-    # print(b)
     x = np.linalg.lstsq(A, b, rcond = None)[0]
-    # print(x)
     return x
 
 
@@ -164,7 +161,7 @@ def test_fem_2D():
     show_solution_2D()
     test_convergence_2D()
 
-
+ 
 def show_solution_1D():
     # manufactured functions
     f = lambda x: 10 - 54*x + 60*x**2
