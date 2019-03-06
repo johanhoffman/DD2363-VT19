@@ -143,6 +143,7 @@ def l2_project_2D(f, nodes):
     x = np.linalg.lstsq(M, b, rcond = None)[0]
     s = 0
 
+    # calculate areas under all piecewise linear functions
     for i in range(n_nodes):
         row = i // (m_x+2)
         col = i % (m_x+2)
@@ -157,7 +158,6 @@ def l2_project_2D(f, nodes):
             s_add += x[i] * h_x[row, col] * h_y[row, col] / 6
         s += s_add
 
-    # calculate areas under all piecewise linear functions
     return s * 9/8
 
 
