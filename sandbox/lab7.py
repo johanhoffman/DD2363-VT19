@@ -3,16 +3,14 @@ from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 def gradient_descent(f, df, x):
-	a = .01
+	a = .001
 	conv = []
 	x_trail = [x.copy()]
-	while np.linalg.norm(df(x)) > 1e-6:
+	while np.linalg.norm(df(x)) > 1e-3:
 		x -= a*df(x)
 		conv.append(np.linalg.norm(x-1))
 		x_trail.append(x.copy())
 
-	# conv = np.array(conv)
-	# conv = np.linalg.norm(conv - 1)
 	return x, np.array(x_trail), conv
 
 def test_gradient_descent_2D():
@@ -42,18 +40,17 @@ def test_gradient_descent():
 	f = lambda x: np.dot((x-1)**2, (x-1)**2)
 	df = lambda x: 4*(x-1)**3
 	x_0 = np.zeros(2)
-	x_min, conv = gradient_descent(f, df, x_0)
+	x_min, x_trail, conv = gradient_descent(f, df, x_0)
 	print(x_min)
-	# print(conv)
+	print(len(conv))
 	# plt.semilogy(conv, label = "Gradient descent")
 	plt.loglog(conv, label = "Gradient descent")
-	# plt.show()
-
+	plt.show()
 
 def newtons_method(f, H, df, x):
 	conv = []
-	a = 0.01
-	x_trail = []
+	a = 1.0
+	x_trail = [] 	
 	while np.linalg.norm(df(x)) > 1e-12:
 		x_trail.append(x.copy())
 		x -= a*np.linalg.lstsq(H(x), df(x), rcond = None)[0]
@@ -82,25 +79,18 @@ def test_newtons_method_2D():
 	plt.show()
 
 def test_newtons_method():
-	# f = lambda x: np.dot(x-1, x-1)
-	# df = lambda x: 2*(x-1)
-	# H = lambda x: np.diag(0*x+2)
 	f = lambda x: np.dot((x-1)**2, (x-1)**2)
 	df = lambda x: 4*(x-1)**3
 	H = lambda x: np.diag(12*(x-1)**2)
 	x_0 = np.zeros(2)
 
 	x_min, x_trail, conv = newtons_method(f, H, df, x_0)
-	print(x_min)
-	# print(conv)
-
-	# plt.semilogy(conv, label = "Newton's method")
-	plt.loglog(conv, label = "Newton's method")
+	plt.semilogy(conv, label = "Newton's method")
 	plt.legend()
 	plt.show()
 
 
 # test_gradient_descent_2D()
-# test_gradient_descent()
+# test_newtons_method_2D()
+test_gradient_descent()
 # test_newtons_method()
-test_newtons_method_2D()
